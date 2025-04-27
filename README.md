@@ -1,4 +1,4 @@
-# Predição do Estado Operacional de Turbinas Offshore com Sensores Remotos
+# Predição do Estado Operacional de Turbinas Offshore com Sensorização Remota
 
 Este projeto propõe uma abordagem para prever o estado operacional das turbinas do parque eólico offshore **WindFloat Atlantic**, utilizando **imagens de satélite** e **dados meteoceanográficos abertos**.
 
