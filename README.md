@@ -1,48 +1,74 @@
-# TFC-DEISI2109-WindOp
-Recolha de Dados
-Visão Geral
-A recolha de dados teve como objetivo prever o estado operacional do parque eólico flutuante WindFloat Atlantic (ao largo de Viana do Castelo, Portugal).
+#Predição do Estado Operacional de Turbinas Offshore com Sensores Remotos
+#Introdução
+Este projeto propõe uma abordagem para prever o estado operacional das turbinas do parque eólico offshore WindFloat Atlantic, utilizando imagens de satélite e dados meteoceanográficos abertos.
+Através de técnicas de Machine Learning e Sensores Remotos, pretende-se reduzir a dependência de sistemas tradicionais de monitorização física, contribuindo para melhorar as estratégias de Operação e Manutenção (O&M) e a eficiência operacional.
 
-O conjunto de dados cobre o período de junho de 2020 a julho de 2024.
+#Objetivo
+Prever o estado operacional de turbinas offshore usando apenas dados de satélite e meteoceanográficos.
 
-Fontes de dados: imagens de satélite Sentinel-2, dados meteoceanográficos e dados de produção da ENTSO-E.
+Desenvolver modelos de machine learning robustos para classificação binária (turbina a operar / não a operar).
 
-Imagens de Satélite
-Fonte: Imagens Sentinel-2 (resolução de 10 metros, baixo erro geométrico, disponibilidade gratuita).
+Demonstrar a viabilidade da aplicação de sensores remotos em operações offshore de energias renováveis.
 
-Objetivo: Detetar as três plataformas flutuantes do WindFloat Atlantic.
+#Recolha de Dados
+##Imagens de Satélite:
 
-Desafio: As plataformas são difíceis de distinguir devido à resolução e às condições meteorológicas (nuvens).
+Sentinel-2 (Programa Copernicus).
 
-Solução:
+Resolução de 10 metros, revisita de 2 dias.
 
-Desenvolvimento de um modelo de Redes Neuronais Convolucionais (CNN).
+Aplicação de uma CNN para detetar automaticamente as plataformas flutuantes.
 
-Criação de um conjunto de dados manualmente etiquetado para treino do modelo.
+##Dados Meteoceanográficos:
 
-O modelo CNN passou a detetar automaticamente as plataformas nas imagens pré-processadas.
+ECHOWAVE (TU Delft) e Copernicus.
 
-Cálculo dos Centroides
-Após a deteção das plataformas, foram calculadas as posições dos centroides (latitude e longitude).
+##Dados de vento (velocidade e direção) e ondas (altura e período).
 
-Os centroides permitiram rastrear deslocamentos e correlacioná-los com condições meteoceanográficas.
+##Dados de Produção:
 
-Os deslocamentos foram expressos como vetores bidimensionais.
+APIs abertas da ENTSO-E.
 
-Dados Meteoceanográficos
-Fontes:
+Dados atribuídos diretamente ao WindFloat Atlantic (único parque offshore em Portugal).
 
-Base de dados ECHOWAVE (TU Delft) para os períodos disponíveis.
+##Dados Derivados:
 
-Base de dados Copernicus para colmatar lacunas.
+Cálculo de centroides das plataformas e respetivos deslocamentos (offsets).
 
-Parâmetros recolhidos:
+Integração de dados temporais, meteorológicos e espaciais num dataset final em CSV.
 
-Velocidade e direção do vento
+#Tratamento de Dados
+##Pré-processamento:
 
-Altura e período de onda
+Extração de timestamps e coordenadas das imagens e máscaras processadas.
 
-Dados de Produção do WindFloat Atlantic
-Fonte: APIs abertas da ENTSO-E.
+Arredondamento dos timestamps para a hora mais próxima.
 
-Justificação: Sendo o WindFloat Atlantic o único parque eólico offshore em operação em Portugal, os dados de produção eólica offshore podem ser diretamente atribuídos a este parque.
+##Fusão de Dados:
+
+Integração de produção elétrica, dados de vento e de ondas para cada timestamp.
+
+Modelação da produção teórica das turbinas com curvas de potência específicas (Vestas V164 8.0 MW).
+
+##Criação do Dataset:
+
+Variáveis incluídas: intensidade e direção do vento, deslocamentos dos centroides, produção real, etc.
+
+Dataset estruturado para análise e treino de modelos de machine learning.
+
+#Treino de Modelos:
+
+Modelos usados: Logistic Regression e SVM com kernel radial (RBF).
+
+Avaliação com métricas: Acurácia, Recall, F1-Score, ROC-AUC.
+
+Validação cruzada K-Fold para robustez.
+
+#Resultados
+Logistic Regression demonstrou maior estabilidade e melhor desempenho global.
+
+SVM obteve elevada precisão em alguns cenários, mas com maior variabilidade entre folds.
+
+Confirmada a correlação entre deslocamento das plataformas e condições de vento.
+
+Demonstração de viabilidade para aplicações remotas em O&M offshore
