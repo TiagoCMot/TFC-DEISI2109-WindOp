@@ -1,71 +1,102 @@
-#Predição do Estado Operacional de Turbinas Offshore com Sensores Remotos
-#Introdução
-Este projeto propõe uma abordagem para prever o estado operacional das turbinas do parque eólico offshore WindFloat Atlantic, utilizando imagens de satélite e dados meteoceanográficos abertos.
-Através de técnicas de Machine Learning e Sensores Remotos, pretende-se reduzir a dependência de sistemas tradicionais de monitorização física, contribuindo para melhorar as estratégias de Operação e Manutenção (O&M) e a eficiência operacional.
+# Predição do Estado Operacional de Turbinas Offshore com Sensores Remotos
 
-#Objetivo
-Prever o estado operacional de turbinas offshore usando apenas dados de satélite e meteoceanográficos.
+Este projeto propõe uma abordagem para prever o estado operacional das turbinas do parque eólico offshore **WindFloat Atlantic**, utilizando **imagens de satélite** e **dados meteoceanográficos abertos**.
 
-Desenvolver modelos de machine learning robustos para classificação binária (turbina a operar / não a operar).
+Através de técnicas de **Machine Learning** e **Sensores Remotos**, pretende-se reduzir a necessidade de sistemas tradicionais de monitorização física, contribuindo para melhorar as estratégias de **Operação e Manutenção (O&M)** e aumentar a eficiência operacional.
 
-Demonstrar a viabilidade da aplicação de sensores remotos em operações offshore de energias renováveis.
+---
 
-#Recolha de Dados
-##Imagens de Satélite:
+## 📋 Tabela de Conteúdos
+- [Objetivo](#objetivo)
+- [Recolha de Dados](#recolha-de-dados)
+  - [Fontes de Dados Utilizadas](#fontes-de-dados-utilizadas)
+  - [Dados Derivados](#dados-derivados)
+- [Tratamento de Dados](#tratamento-de-dados)
+  - [Integração e Pré-processamento](#integração-e-pré-processamento)
+  - [Fusão de Dados](#fusão-de-dados)
+  - [Treino de Modelos](#treino-de-modelos)
+- [Resultados](#resultados)
+- [Instalação](#instalação)
+- [Execução](#execução)
+- [Resultados Esperados](#resultados-esperados)
+- [Contribuições](#contribuições)
+- [Licença](#licença)
+- [Financiamento](#financiamento)
 
-Sentinel-2 (Programa Copernicus).
+---
 
-Resolução de 10 metros, revisita de 2 dias.
+## 🎯 Objetivo
+- Prever o estado operacional de turbinas offshore usando dados de satélite e meteoceanográficos.
+- Desenvolver modelos de machine learning robustos para classificação binária (turbina a operar / não a operar).
+- Demonstrar a viabilidade da utilização de sensores remotos para operações offshore de energias renováveis.
 
-Aplicação de uma CNN para detetar automaticamente as plataformas flutuantes.
+---
 
-##Dados Meteoceanográficos:
+## 🌍 Recolha de Dados
 
-ECHOWAVE (TU Delft) e Copernicus.
+### Fontes de Dados Utilizadas
+- **Imagens de Satélite Sentinel-2** (Programa Copernicus)
+  - Resolução de 10 metros.
+  - Revisita de aproximadamente 2 dias.
+  - Deteção automática das plataformas com Rede Neural Convolucional (CNN).
+  
+- **Dados Meteoceanográficos**
+  - Bases de dados **ECHOWAVE** (TU Delft) e **Copernicus**.
+  - Velocidade e direção do vento, altura e período das ondas.
 
-##Dados de vento (velocidade e direção) e ondas (altura e período).
+- **Dados de Produção Elétrica**
+  - APIs abertas da **ENTSO-E**.
+  - Dados diretamente atribuídos ao WindFloat Atlantic (único parque offshore em Portugal).
 
-##Dados de Produção:
+### Dados Derivados
+- **Máscaras das plataformas** criadas por CNN treinada manualmente.
+- **Centroides das plataformas** calculados para analisar deslocamentos.
+- **Offsets** entre posições de centroides e posição média.
 
-APIs abertas da ENTSO-E.
+---
 
-Dados atribuídos diretamente ao WindFloat Atlantic (único parque offshore em Portugal).
+## ⚙️ Tratamento de Dados
 
-##Dados Derivados:
+### Integração e Pré-processamento
+- Scripts Python para:
+  - Extrair timestamps e coordenadas das imagens.
+  - Arredondar timestamps para a hora mais próxima.
+  - Associar imagens a dados meteoceanográficos e de produção.
 
-Cálculo de centroides das plataformas e respetivos deslocamentos (offsets).
+### Fusão de Dados
+- A classe `offshoreDataMerger` junta:
+  - Produção elétrica,
+  - Dados de vento,
+  - Dados de ondas.
+- Integração feita com base nos timestamps comuns.
 
-Integração de dados temporais, meteorológicos e espaciais num dataset final em CSV.
+### Treino de Modelos
+- **Classificação binária**: turbina em funcionamento vs. turbina parada.
+- **Modelos utilizados**:
+  - Regressão Logística (Logistic Regression).
+  - Máquina de Vetores de Suporte (SVM) com kernel radial (RBF).
+- **Avaliação**:
+  - Acurácia, Precisão, Recall, F1-Score, ROC-AUC.
+  - Validação cruzada (K-Fold).
 
-#Tratamento de Dados
-##Pré-processamento:
+---
 
-Extração de timestamps e coordenadas das imagens e máscaras processadas.
+## 📈 Resultados
 
-Arredondamento dos timestamps para a hora mais próxima.
+- A **Regressão Logística** mostrou desempenho mais estável e robusto.
+- O modelo **SVM** teve melhor desempenho pontual mas mostrou maior variabilidade nos dados.
+- Confirmação da correlação entre deslocamentos dos centroides e as condições de vento.
+- A viabilidade da monitorização remota foi demonstrada com sucesso.
 
-##Fusão de Dados:
+---
 
-Integração de produção elétrica, dados de vento e de ondas para cada timestamp.
+## 🛠️ Instalação
 
-Modelação da produção teórica das turbinas com curvas de potência específicas (Vestas V164 8.0 MW).
+1. Clonar o repositório:
+   ```bash
+   git clone https://github.com/seu-utilizador/nome-do-repositorio.git
+   cd nome-do-repositorio
 
-##Criação do Dataset:
-
-Variáveis incluídas: intensidade e direção do vento, deslocamentos dos centroides, produção real, etc.
-
-Dataset estruturado para análise e treino de modelos de machine learning.
-
-#Treino de Modelos:
-
-Modelos usados: Logistic Regression e SVM com kernel radial (RBF).
-
-Avaliação com métricas: Acurácia, Recall, F1-Score, ROC-AUC.
-
-Validação cruzada K-Fold para robustez.
-
-#Resultados
-Logistic Regression demonstrou maior estabilidade e melhor desempenho global.
 
 SVM obteve elevada precisão em alguns cenários, mas com maior variabilidade entre folds.
 
